@@ -195,7 +195,11 @@ class FeatureSpace:
         try:
             sb.clear()
             num_of_bands = lyr_nm.bandCount()
-            sb.addItems([' '] + [ str(i+1) for i in range(num_of_bands)])
+            print(num_of_bands)
+            if num_of_bands ==1:
+                sb.addItems([str(1)])
+            else:
+                sb.addItems([ str(i+1) for i in range(num_of_bands)])
         except:
             pass
         

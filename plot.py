@@ -34,7 +34,7 @@ def using_datashader(ax, x, y):
     )
 
 class GuiProgram(FeatureSpaceDialog):
-    def __init__(self, dialog, wcb, wcb2, wcb_red, wcb_green, wcb_blue, sb, sb2, sb_red, sb_green, sb_blue, temp_path):
+    def __init__(self, dialog, wcb, wcb2, wcb_red, wcb_green, wcb_blue, sb, sb2, sb_red, sb_green, sb_blue):
         self.dialog = dialog
 
         self.wcb = wcb
@@ -155,6 +155,8 @@ class GuiProgram(FeatureSpaceDialog):
             self.image1, self.band1, self.x = self.get_band_as_array(self.wcb.currentLayer().source(), int(self.sb.currentText()), True)
             self.image2, self.band2, self.y = self.get_band_as_array(self.wcb2.currentLayer().source(), int(self.sb2.currentText()), True)
             using_datashader(self.ax, self.x, self.y)
+            self.ax.set_xlim(min(self.x)+ min(self.x)*0.1, max(self.x)+ max(self.x)*0.1)
+            self.ax.set_ylim(min(self.y) + min(self.y)*0.1, max(self.y)+ max(self.y)*0.1)
             # Make sure everything fits inside the canvas
             self.fig.tight_layout()
             self.canvas.draw()
