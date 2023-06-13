@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/plugins/feature_space" >
+        <file>icon.png</file>
+    </qresource>
+</RCC>
