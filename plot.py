@@ -1,5 +1,3 @@
-import sys
-from PyQt5 import QtWidgets, QtCore
 import matplotlib
 matplotlib.use("Qt5Agg")
 from matplotlib.figure import Figure
@@ -15,6 +13,10 @@ import numpy as np
 from skimage import exposure
 from matplotlib import colors
 from .feature_space_dialog import FeatureSpaceDialog
+from uuid import uuid4
+from qgis.core import QgsRasterLayer, QgsVectorLayer,  QgsProject, QgsProcessingParameterRasterDestination
+import processing
+
 cmap = colors.ListedColormap(['red'])
 
 def using_datashader(ax, x, y):
@@ -32,9 +34,7 @@ def using_datashader(ax, x, y):
     )
 
 class GuiProgram(FeatureSpaceDialog):
-    ''' A class which takes care of user interaction. '''
-
-    def __init__(self, dialog, wcb, wcb2, wcb_red, wcb_green, wcb_blue, sb, sb2, sb_red, sb_green, sb_blue):
+    def __init__(self, dialog, wcb, wcb2, wcb_red, wcb_green, wcb_blue, sb, sb2, sb_red, sb_green, sb_blue, temp_path):
         self.dialog = dialog
 
         self.wcb = wcb
@@ -49,19 +49,28 @@ class GuiProgram(FeatureSpaceDialog):
         self.sb_green = sb_green
         self.sb_blue = sb_blue
 
-        ''' This method gets called when the window is created. '''
-        FeatureSpaceDialog.__init__(self)              # Initialize Window
-        self.setupUi(dialog)                 # Set up the UI
-        # Initialize the figure in our window
-        figure = Figure()                     # Prep empty figure
+        FeatureSpaceDialog.__init__(self)
+        self.setupUi(dialog)
+        
+        figure = Figure()
         axis = figure.add_subplot(111)
-        figure2 = Figure()                     # Prep empty figure       # Prep empty plot
-        axis2 = figure2.add_subplot(111)        # Prep empty plot
-        self.initialize_figure(figure, axis, figure2, axis2)  # Initialize!
-        # Connect our button with plotting function
+        figure2 = Figure()
+        axis2 = figure2.add_subplot(111)
+        self.initialize_figure(figure, axis, figure2, axis2)
+
         self.pushButton.clicked.connect(self.change_plot)
+        self.add_raster.clicked.connect(self.save_as_raster)
+        self.add_vector.clicked.connect(self.save_as_vector)
 
-
+    def write_tiff(self, data, filename, proj, geo, dtype=gdal.GDT_Float32):
+        rows, cols = data.shape
+        driver = gdal.GetDriverByName("GTiff")
+        DataSet = driver.Create(filename, cols, rows, 1, dtype)
+        DataSet.SetGeoTransform(geo)
+        DataSet.SetProjection(proj)
+        DataSet.GetRasterBand(1).WriteArray(data)
+        DataSet.FlushCache()
+        DataSet = None
 
     def on_click(self, event):
         if event.button == 1 or event.button == 3 and not self.rs.active:
@@ -75,17 +84,44 @@ class GuiProgram(FeatureSpaceDialog):
 
         b1_condition = np.logical_and(self.band1 > x1, self.band1 < x2)
         b2_condition = np.logical_and(self.band2 > y1, self.band2 < y2)
-        conds = np.logical_and(b1_condition, b2_condition).astype(float)
-        conds[conds == 0]= np.nan
+        self.conds = np.logical_and(b1_condition, b2_condition).astype(float)
+        self.conds[self.conds == 0]= np.nan
 
         self.ax2.clear()
         self.ax2.imshow(self.new_im)
-        self.ax2.imshow(conds, cmap=cmap, alpha=0.6)
+        self.ax2.imshow(self.conds, cmap=cmap, alpha=0.6)
         self.ax2.axis('off')
         self.fig2.tight_layout()
         self.canvas2.draw()
         
 
+    def save_as_raster(self):
+        dest = QgsProcessingParameterRasterDestination(name=str(uuid4()))
+        filename = dest.generateTemporaryDestination()
+    
+        proj = self.image1.GetProjection()
+        geo = self.image1.GetGeoTransform()
+        data = self.conds
+        self.write_tiff(data, filename, proj, geo)
+
+        layer = QgsRasterLayer(filename, 'feature_space_selected')
+        if not layer.isValid():
+            print("Layer failed to load!")
+        QgsProject.instance().addMapLayer(layer)
+
+    def save_as_vector(self):
+        dest = QgsProcessingParameterRasterDestination(name=str(uuid4()))
+        filename = dest.generateTemporaryDestination()
+        
+        proj = self.image1.GetProjection()
+        geo = self.image1.GetGeoTransform()
+        data = self.conds
+        self.write_tiff(data, filename, proj, geo)
+
+        poly_opts = { 'BAND' : 1, 'EXTRA' : f'-mask {filename}', 'INPUT' : filename, 'OUTPUT' : 'TEMPORARY_OUTPUT' }
+        vlayer = processing.run("gdal:polygonize", poly_opts)
+        vlayer = QgsVectorLayer(vlayer["OUTPUT"], "feature_space_selected_vector")
+        QgsProject.instance().addMapLayer(vlayer)
 
     def get_band_as_array(self, filepath, band_number, flat=False):
         image = gdal.Open(filepath)
@@ -141,17 +177,12 @@ class GuiProgram(FeatureSpaceDialog):
             pass
 
     def initialize_figure(self, fig, ax, fig2, ax2):
-        ''' Initializes a matplotlib figure inside a GUI container.
-            Only call this once when initializing.
-        '''
-        # Figure creation (self.fig and self.ax)
         self.fig = fig
         self.ax = ax
 
         self.fig2 = fig2
         self.ax2 = ax2
 
-        # Canvas creation
         self.canvas = FigureCanvas(self.fig)
         self.verticalLayout.addWidget(self.canvas)
         self.canvas.draw()

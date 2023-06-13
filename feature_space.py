@@ -28,6 +28,8 @@ from qgis.PyQt.QtWidgets import QAction
 from qgis.core import QgsMapLayerProxyModel
 from qgis.gui import QgsMapLayerComboBox
 from PyQt5.QtWidgets import QComboBox, QLabel
+import tempfile
+import shutil
 
 # Initialize Qt resources from file resources.py
 from .resources import *
@@ -217,7 +219,6 @@ class FeatureSpace:
         return sb
 
     def run(self):
-
         # Only create GUI ONCE in callback, so that it will only load when the plugin is started
         if self.first_start == True:
             self.first_start = False
@@ -246,8 +247,6 @@ class FeatureSpace:
 
         # Run the dialog event loop
         result = self.dlg.exec_()
-        # See if OK was pressed
         if result:
-            # Do something useful here - delete the line containing pass and
-            # substitute with your code.
             pass
+

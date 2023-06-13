@@ -90,6 +90,32 @@
     <string>Select bands for rgb image:</string>
    </property>
   </widget>
+  <widget class="QPushButton" name="add_raster">
+   <property name="geometry">
+    <rect>
+     <x>58</x>
+     <y>830</y>
+     <width>141</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>add raster to map</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="add_vector">
+   <property name="geometry">
+    <rect>
+     <x>230</x>
+     <y>830</y>
+     <width>141</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>add vector to map</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections>
