@@ -104,7 +104,13 @@ class GuiProgram(FeatureSpaceDialog):
         data = self.conds
         self.write_tiff(data, filename, proj, geo)
 
-        layer = QgsRasterLayer(filename, 'feature_space_selected')
+        input_name = self.layer_name_input.toPlainText()
+        if input_name == '':
+            layer_name = "feature_space_selected_raster"
+        else:
+            layer_name = input_name
+
+        layer = QgsRasterLayer(filename, layer_name)
         if not layer.isValid():
             print("Layer failed to load!")
         QgsProject.instance().addMapLayer(layer)
@@ -118,9 +124,15 @@ class GuiProgram(FeatureSpaceDialog):
         data = self.conds
         self.write_tiff(data, filename, proj, geo)
 
+        input_name = self.layer_name_input.toPlainText()
+        if input_name == '':
+            layer_name = "feature_space_selected_vector"
+        else:
+            layer_name = input_name
+
         poly_opts = { 'BAND' : 1, 'EXTRA' : f'-mask {filename}', 'INPUT' : filename, 'OUTPUT' : 'TEMPORARY_OUTPUT' }
         vlayer = processing.run("gdal:polygonize", poly_opts)
-        vlayer = QgsVectorLayer(vlayer["OUTPUT"], "feature_space_selected_vector")
+        vlayer = QgsVectorLayer(vlayer["OUTPUT"], layer_name)
         QgsProject.instance().addMapLayer(vlayer)
 
     def get_band_as_array(self, filepath, band_number, flat=False):
@@ -152,11 +164,21 @@ class GuiProgram(FeatureSpaceDialog):
         self.ax2.clear()
 
         try:
-            self.image1, self.band1, self.x = self.get_band_as_array(self.wcb.currentLayer().source(), int(self.sb.currentText()), True)
-            self.image2, self.band2, self.y = self.get_band_as_array(self.wcb2.currentLayer().source(), int(self.sb2.currentText()), True)
+            xfile = self.wcb.currentLayer().source()
+            yfile = self.wcb2.currentLayer().source()
+            xband = int(self.sb.currentText())
+            yband = int(self.sb2.currentText())
+
+            self.image1, self.band1, self.x = self.get_band_as_array(xfile, xband, True)
+            self.image2, self.band2, self.y = self.get_band_as_array(yfile, yband, True)
             using_datashader(self.ax, self.x, self.y)
-            self.ax.set_xlim(min(self.x)+ min(self.x)*0.1, max(self.x)+ max(self.x)*0.1)
-            self.ax.set_ylim(min(self.y) + min(self.y)*0.1, max(self.y)+ max(self.y)*0.1)
+            amountx = max(self.x)*0.1
+            amounty = max(self.y)*0.1
+            self.ax.set_xlim(min(self.x) - amountx, max(self.x) + amountx)
+            self.ax.set_ylim(min(self.y) - amounty, max(self.y) + amounty)
+
+            self.ax.set_xlabel(xfile.split('/')[-1] + '\nBand: ' + str(xband))
+            self.ax.set_ylabel(yfile.split('/')[-1] + '\nBand: ' + str(yband))
             # Make sure everything fits inside the canvas
             self.fig.tight_layout()
             self.canvas.draw()

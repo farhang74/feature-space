@@ -13,22 +13,6 @@
   <property name="windowTitle">
    <string>feature space</string>
   </property>
-  <widget class="QDialogButtonBox" name="button_box">
-   <property name="geometry">
-    <rect>
-     <x>1000</x>
-     <y>840</y>
-     <width>341</width>
-     <height>32</height>
-    </rect>
-   </property>
-   <property name="orientation">
-    <enum>Qt::Horizontal</enum>
-   </property>
-   <property name="standardButtons">
-    <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-   </property>
-  </widget>
   <widget class="QWidget" name="plotWindow" native="true">
    <property name="geometry">
     <rect>
@@ -43,10 +27,10 @@
   <widget class="QPushButton" name="pushButton">
    <property name="geometry">
     <rect>
-     <x>290</x>
-     <y>190</y>
-     <width>89</width>
-     <height>25</height>
+     <x>1160</x>
+     <y>120</y>
+     <width>111</width>
+     <height>41</height>
     </rect>
    </property>
    <property name="text">
@@ -68,7 +52,7 @@
    <property name="geometry">
     <rect>
      <x>100</x>
-     <y>10</y>
+     <y>30</y>
      <width>211</width>
      <height>20</height>
     </rect>
@@ -81,7 +65,7 @@
    <property name="geometry">
     <rect>
      <x>710</x>
-     <y>10</y>
+     <y>30</y>
      <width>211</width>
      <height>20</height>
     </rect>
@@ -93,63 +77,53 @@
   <widget class="QPushButton" name="add_raster">
    <property name="geometry">
     <rect>
-     <x>58</x>
+     <x>510</x>
      <y>830</y>
      <width>141</width>
      <height>25</height>
     </rect>
    </property>
    <property name="text">
-    <string>add raster to map</string>
+    <string>Add as raster</string>
    </property>
   </widget>
   <widget class="QPushButton" name="add_vector">
    <property name="geometry">
     <rect>
-     <x>230</x>
+     <x>710</x>
      <y>830</y>
      <width>141</width>
      <height>25</height>
     </rect>
    </property>
    <property name="text">
-    <string>add vector to map</string>
+    <string>Add as vector</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_7">
+   <property name="geometry">
+    <rect>
+     <x>80</x>
+     <y>820</y>
+     <width>91</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Layer name:</string>
+   </property>
+  </widget>
+  <widget class="QTextEdit" name="layer_name_input">
+   <property name="geometry">
+    <rect>
+     <x>200</x>
+     <y>820</y>
+     <width>201</width>
+     <height>31</height>
+    </rect>
    </property>
   </widget>
  </widget>
  <resources/>
- <connections>
-  <connection>
-   <sender>button_box</sender>
-   <signal>accepted()</signal>
-   <receiver>FeatureSpaceDialogBase</receiver>
-   <slot>accept()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>button_box</sender>
-   <signal>rejected()</signal>
-   <receiver>FeatureSpaceDialogBase</receiver>
-   <slot>reject()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>

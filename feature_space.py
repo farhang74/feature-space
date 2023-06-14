@@ -28,8 +28,6 @@ from qgis.PyQt.QtWidgets import QAction
 from qgis.core import QgsMapLayerProxyModel
 from qgis.gui import QgsMapLayerComboBox
 from PyQt5.QtWidgets import QComboBox, QLabel
-import tempfile
-import shutil
 
 # Initialize Qt resources from file resources.py
 from .resources import *
@@ -229,19 +227,19 @@ class FeatureSpace:
             self.dlg = FeatureSpaceDialog()
         
         
-        self.sb = self.create_select_band_drpdwn(self.dlg, 50, [450,27])
-        self.sb2 = self.create_select_band_drpdwn(self.dlg, 50, [450,127])
+        self.sb = self.create_select_band_drpdwn(self.dlg, 50, [380,100])
+        self.sb2 = self.create_select_band_drpdwn(self.dlg, 50, [380,140])
 
-        self.sb_red = self.create_select_band_drpdwn(self.dlg, 50, [950,27])
-        self.sb_green = self.create_select_band_drpdwn(self.dlg, 50, [950,127])
-        self.sb_blue = self.create_select_band_drpdwn(self.dlg, 50, [950,227])
+        self.sb_red = self.create_select_band_drpdwn(self.dlg, 50, [920,80])
+        self.sb_green = self.create_select_band_drpdwn(self.dlg, 50, [920,120])
+        self.sb_blue = self.create_select_band_drpdwn(self.dlg, 50, [920,160])
 
-        self.wcb = self.create_map_layer_drpdwn(self.dlg, 150, [220,40], QgsMapLayerProxyModel.RasterLayer, self.sb, 'X Axis')
-        self.wcb2 = self.create_map_layer_drpdwn(self.dlg, 150, [220,80], QgsMapLayerProxyModel.RasterLayer, self.sb2, 'Y Axis')
+        self.wcb = self.create_map_layer_drpdwn(self.dlg, 150, [220,100], QgsMapLayerProxyModel.RasterLayer, self.sb, 'X Axis')
+        self.wcb2 = self.create_map_layer_drpdwn(self.dlg, 150, [220,140], QgsMapLayerProxyModel.RasterLayer, self.sb2, 'Y Axis')
 
-        self.wcb_red = self.create_map_layer_drpdwn(self.dlg, 150, [720,27], QgsMapLayerProxyModel.RasterLayer, self.sb_red, 'Red')
-        self.wcb_green = self.create_map_layer_drpdwn(self.dlg, 150, [720,127], QgsMapLayerProxyModel.RasterLayer, self.sb_green, "Green")
-        self.wcb_blue = self.create_map_layer_drpdwn(self.dlg, 150, [720,227], QgsMapLayerProxyModel.RasterLayer, self.sb_blue, 'Blue')
+        self.wcb_red = self.create_map_layer_drpdwn(self.dlg, 150, [750,80], QgsMapLayerProxyModel.RasterLayer, self.sb_red, 'Red')
+        self.wcb_green = self.create_map_layer_drpdwn(self.dlg, 150, [750,120], QgsMapLayerProxyModel.RasterLayer, self.sb_green, "Green")
+        self.wcb_blue = self.create_map_layer_drpdwn(self.dlg, 150, [750,160], QgsMapLayerProxyModel.RasterLayer, self.sb_blue, 'Blue')
 
 
         program = GuiProgram(self.dlg,
