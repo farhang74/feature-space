@@ -4,7 +4,6 @@ from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas,  NavigationToolbar2QT as NavigationToolbar
 from matplotlib.widgets import RectangleSelector
 from osgeo import gdal
-import pandas as pd
 from matplotlib.widgets import RectangleSelector
 import numpy as np
 from matplotlib import colors
@@ -128,11 +127,14 @@ class GuiProgram(FeatureSpaceDialog):
 
     def get_band_as_array(self, filepath, band_number, flat=False):
         image = gdal.Open(filepath)
-        band = image.GetRasterBand(band_number).ReadAsArray()
+        band = image.GetRasterBand(band_number)
+        nodata = band.GetNoDataValue()
+        band = band.ReadAsArray()
+
         if flat:
-            return image, band, band.flatten()
+            return image, band, nodata, band.flatten()
         else:
-            return image, band
+            return image, band, nodata
     
     def create_rgb(self, red, green, blue):
         rgb = np.zeros((red.shape[0],red.shape[1], 3))
@@ -151,9 +153,13 @@ class GuiProgram(FeatureSpaceDialog):
             xband = int(self.sb.currentText())
             yband = int(self.sb2.currentText())
 
-            self.image1, self.band1, self.x = self.get_band_as_array(xfile, xband, True)
-            self.image2, self.band2, self.y = self.get_band_as_array(yfile, yband, True)
+            self.image1, self.band1, self.nodatax, self.x  = self.get_band_as_array(xfile, xband, True)
+            self.image2, self.band2, self.nodatay, self.y = self.get_band_as_array(yfile, yband, True)
             self.create_scatter(self.ax, self.x, self.y)
+
+            self.x = self.x[self.x!=self.nodatax]
+            self.y = self.y[self.y!=self.nodatay]
+
             amountx = max(self.x)*0.1
             amounty = max(self.y)*0.1
             self.ax.set_xlim(min(self.x) - amountx, max(self.x) + amountx)
@@ -164,13 +170,14 @@ class GuiProgram(FeatureSpaceDialog):
             # Make sure everything fits inside the canvas
             self.fig.tight_layout()
             self.canvas.draw()
-        except:
+        except Exception as e:
+            print(e)
             pass
 
         try:
-            self.image_red, self.band_red = self.get_band_as_array(self.wcb_red.currentLayer().source(), int(self.sb_red.currentText()))
-            self.image_green, self.band_green = self.get_band_as_array(self.wcb_green.currentLayer().source(), int(self.sb_green.currentText()))
-            self.image_blue, self.band_blue = self.get_band_as_array(self.wcb_blue.currentLayer().source(), int(self.sb_blue.currentText()))
+            self.image_red, self.band_red, _ = self.get_band_as_array(self.wcb_red.currentLayer().source(), int(self.sb_red.currentText()))
+            self.image_green, self.band_green, _ = self.get_band_as_array(self.wcb_green.currentLayer().source(), int(self.sb_green.currentText()))
+            self.image_blue, self.band_blue, _ = self.get_band_as_array(self.wcb_blue.currentLayer().source(), int(self.sb_blue.currentText()))
 
             self.rgb = self.create_rgb(self.band_red, self.band_green, self.band_blue)
             self.rgb = self.rgb/self.rgb.max()
