@@ -16,7 +16,7 @@ repository=https://github.com/farhang74/feature-space
 category=Raster
 changelog=The changelog lists the plugin versions
     and their changes as in the example below:
-    0.2 - Automatically install dependencies
+    0.2 - Remove dependencies
     0.1 - First stable release
 
 ; Tags are in comma separated value format, spaces are allowed within the
@@ -44,4 +44,3 @@ qgisMaximumVersion=3.99
 ; and any version of "YetAnotherPlugin".
 ; Both "MyOtherPlugin" and "YetAnotherPlugin" names come from their own metadata's
 ; name field
-plugin_dependencies=datashader==0.15.0
