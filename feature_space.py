@@ -188,7 +188,6 @@ class FeatureSpace:
 
     def load_fields(self, wcb, sb):
         lyr_nm=wcb.currentLayer()
-        print(lyr_nm)
 
         try:
             sb.clear()

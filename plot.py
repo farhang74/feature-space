@@ -7,7 +7,6 @@ from osgeo import gdal
 import pandas as pd
 from matplotlib.widgets import RectangleSelector
 import numpy as np
-from skimage import exposure
 from matplotlib import colors
 from .feature_space_dialog import FeatureSpaceDialog
 from uuid import uuid4
@@ -80,7 +79,7 @@ class GuiProgram(FeatureSpaceDialog):
         self.conds[self.conds == 0]= np.nan
 
         self.ax2.clear()
-        self.ax2.imshow(self.new_im)
+        self.ax2.imshow(self.rgb)
         self.ax2.imshow(self.conds, cmap=cmap, alpha=0.6)
         self.ax2.axis('off')
         self.fig2.tight_layout()
@@ -142,15 +141,6 @@ class GuiProgram(FeatureSpaceDialog):
         rgb[:,:,2] = blue
         return rgb
 
-    def stretch_im(self, arr, str_clip):
-        s_min = str_clip
-        s_max = 100 - str_clip
-        arr_rescaled = np.zeros_like(arr)
-        for band in range(3):
-            lower, upper = np.nanpercentile(arr[:,:,band], (s_min, s_max))
-            arr_rescaled[:,:,band] = exposure.rescale_intensity(arr[:,:,band], in_range=(lower, upper))
-        return arr_rescaled.copy()
-
     def change_plot(self):
         self.ax.clear()
         self.ax2.clear()
@@ -183,8 +173,8 @@ class GuiProgram(FeatureSpaceDialog):
             self.image_blue, self.band_blue = self.get_band_as_array(self.wcb_blue.currentLayer().source(), int(self.sb_blue.currentText()))
 
             self.rgb = self.create_rgb(self.band_red, self.band_green, self.band_blue)
-            self.new_im = self.stretch_im(self.rgb, 1)
-            self.ax2.imshow(self.new_im)
+            self.rgb = self.rgb/self.rgb.max()
+            self.ax2.imshow(self.rgb)
             self.ax2.axis('off')
             self.fig2.tight_layout()
             self.canvas2.draw()
