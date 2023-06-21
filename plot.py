@@ -3,10 +3,7 @@ matplotlib.use("Qt5Agg")
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas,  NavigationToolbar2QT as NavigationToolbar
 from matplotlib.widgets import RectangleSelector
-
 from osgeo import gdal
-import datashader as ds
-from datashader.mpl_ext import dsshow
 import pandas as pd
 from matplotlib.widgets import RectangleSelector
 import numpy as np
@@ -16,22 +13,9 @@ from .feature_space_dialog import FeatureSpaceDialog
 from uuid import uuid4
 from qgis.core import QgsRasterLayer, QgsVectorLayer,  QgsProject, QgsProcessingParameterRasterDestination
 import processing
+from matplotlib.colors import LogNorm
 
 cmap = colors.ListedColormap(['red'])
-
-def using_datashader(ax, x, y):
-
-    df = pd.DataFrame(dict(x=x, y=y))
-    dsartist = dsshow(
-        df,
-        ds.Point("x", "y"),
-        ds.count(),
-        vmin=0,
-        vmax=35,
-        norm="linear",
-        aspect="auto",
-        ax=ax,
-    )
 
 class GuiProgram(FeatureSpaceDialog):
     def __init__(self, dialog, wcb, wcb2, wcb_red, wcb_green, wcb_blue, sb, sb2, sb_red, sb_green, sb_blue):
@@ -71,6 +55,14 @@ class GuiProgram(FeatureSpaceDialog):
         DataSet.GetRasterBand(1).WriteArray(data)
         DataSet.FlushCache()
         DataSet = None
+
+    def create_scatter(self, ax, x, y):
+        bins = [1000, 1000] #TODO calculate dynamically
+        hh, locx, locy = np.histogram2d(x, y, bins=bins)
+        z = np.array([hh[np.argmax(a<=locx[1:]),np.argmax(b<=locy[1:])] for a,b in zip(x,y)])
+        idx = z.argsort()
+        x2, y2, z2 = x[idx], y[idx], z[idx]
+        s = ax.scatter(x2, y2, c=z2, cmap='jet', marker='.', s=0.05, norm = LogNorm()) 
 
     def on_click(self, event):
         if event.button == 1 or event.button == 3 and not self.rs.active:
@@ -171,7 +163,7 @@ class GuiProgram(FeatureSpaceDialog):
 
             self.image1, self.band1, self.x = self.get_band_as_array(xfile, xband, True)
             self.image2, self.band2, self.y = self.get_band_as_array(yfile, yband, True)
-            using_datashader(self.ax, self.x, self.y)
+            self.create_scatter(self.ax, self.x, self.y)
             amountx = max(self.x)*0.1
             amounty = max(self.y)*0.1
             self.ax.set_xlim(min(self.x) - amountx, max(self.x) + amountx)
