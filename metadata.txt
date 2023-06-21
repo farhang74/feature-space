@@ -1,47 +1,47 @@
-# This file contains metadata for your plugin.
-
-# This file should be included when you package your plugin.# Mandatory items:
+; the next section is mandatory
 
 [general]
-name=feature space
+name=feature_space
+email=zarefarhang@gmail.com
+author=Farhang Zare
 qgisMinimumVersion=3.0
-description=test
-version=0.1
-author=fz
-email=fz
+description=A plugin to plot feature space and export areas as raster or vector
+about=A plugin to plot feature space and export areas as raster or vector
+version=version 0.2
+tracker=https://github.com/farhang74/feature-space/issues
+repository=https://github.com/farhang74/feature-space
+; end of mandatory metadata
 
-about=Provide a brief description of the plugin and its purpose.
-
-tracker=http://bugs
-repository=http://repo
-# End of mandatory metadata
-
-# Recommended items:
-
-hasProcessingProvider=no
-# Uncomment the following line and add your changelog:
-# changelog=
-
-# Tags are comma separated with spaces allowed
-tags=python
-
-homepage=http://homepage
+; start of optional metadata
 category=Raster
+changelog=The changelog lists the plugin versions
+    and their changes as in the example below:
+    0.2 - Automatically install dependencies
+    0.1 - First stable release
+
+; Tags are in comma separated value format, spaces are allowed within the
+; tag name.
+; Tags should be in English language. Please also check for existing tags and
+; synonyms before creating a new one.
+tags=feature space,feature, space, plot, density
+
+; these metadata can be empty, they will eventually become mandatory.
+homepage=https://github.com/farhang74/feature-space
 icon=icon.png
-# experimental flag
+
+; experimental flag (applies to the single version)
 experimental=False
 
-# deprecated flag (applies to the whole plugin, not just a single version)
+; deprecated flag (applies to the whole plugin and not only to the uploaded version)
 deprecated=False
 
-# Since QGIS 3.8, a comma separated list of plugins to be installed
-# (or upgraded) can be specified.
-# Check the documentation for more information.
-# plugin_dependencies=
+; if empty, it will be automatically set to major version + .99
+qgisMaximumVersion=3.99
 
-Category of the plugin: Raster, Vector, Database or Web
-# category=
-
-# If the plugin can run on QGIS Server.
-server=False
-
+; Since QGIS 3.8, a comma separated list of plugins to be installed
+; (or upgraded) can be specified.
+; The example below will try to install (or upgrade) "MyOtherPlugin" version 1.12
+; and any version of "YetAnotherPlugin".
+; Both "MyOtherPlugin" and "YetAnotherPlugin" names come from their own metadata's
+; name field
+plugin_dependencies=datashader==0.15.0
