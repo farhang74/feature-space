@@ -7,7 +7,7 @@ author=Farhang Zare
 qgisMinimumVersion=3.0
 description=A plugin to plot feature space and export areas as raster or vector
 about=A plugin to plot feature space and export areas as raster or vector
-version=version 0.2
+version=version 0.21
 tracker=https://github.com/farhang74/feature-space/issues
 repository=https://github.com/farhang74/feature-space
 ; end of mandatory metadata
@@ -16,6 +16,7 @@ repository=https://github.com/farhang74/feature-space
 category=Raster
 changelog=The changelog lists the plugin versions
     and their changes as in the example below:
+    0.21 - Remove nan values from raster
     0.2 - Remove dependencies
     0.1 - First stable release
 
