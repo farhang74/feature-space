@@ -155,6 +155,10 @@ class GuiProgram(FeatureSpaceDialog):
 
             self.image1, self.band1, self.nodatax, self.x  = self.get_band_as_array(xfile, xband, True)
             self.image2, self.band2, self.nodatay, self.y = self.get_band_as_array(yfile, yband, True)
+
+            self.x = self.x[np.isfinite(self.x)]
+            self.y = self.y[np.isfinite(self.y)]
+
             self.create_scatter(self.ax, self.x, self.y)
 
             self.x = self.x[self.x!=self.nodatax]
