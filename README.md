@@ -8,7 +8,8 @@ To install: Go to Plugins tab -> manage and install plugins then search for feat
 
 After the installation is complete a new tool will be added under Raster tab
 
-![Screenshot from 2023-06-26 14-35-48](https://github.com/farhang74/feature-space/assets/76580757/20c86a68-9036-49ef-ad29-68a852304adc)
+![Screenshot from 2023-06-30 21-16-30](https://github.com/farhang74/feature-space/assets/76580757/0791428f-af82-4639-b902-907df0928ceb)
+
 
 ## simple tutorial
 
